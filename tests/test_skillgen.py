@@ -189,8 +189,8 @@ def test_query_heading_is_homed_in_core_stub_only():
     assert "## For /graphify path" not in core_headings
 
 
-def test_eight_references_render_for_claude():
-    """claude renders exactly the eight on-demand fragments from the design."""
+def test_nine_references_render_for_claude():
+    """claude renders exactly the nine on-demand fragments from the design."""
     _, refs = _claude_artifacts()
     assert sorted(refs) == [
         "add-watch.md",
@@ -199,6 +199,7 @@ def test_eight_references_render_for_claude():
         "github-and-merge.md",
         "hooks.md",
         "query.md",
+        "sigma-viz.md",
         "transcribe.md",
         "update.md",
     ]
@@ -285,9 +286,12 @@ def test_descriptions_are_unified():
 
 
 def test_windows_frontmatter_name_and_shell_and_extra():
-    """windows: graphify-windows name, powershell install, troubleshooting tail."""
+    """windows: name must be `graphify` (folder-name rule, #1635), powershell
+    install, troubleshooting tail."""
     core, _ = _platform_artifacts("windows")
-    assert core.startswith("---\nname: graphify-windows\n")
+    # Claude Code requires the frontmatter name to equal the install folder
+    # (graphify); a `graphify-windows` name broke skill discovery (#1635).
+    assert core.startswith("---\nname: graphify\n")
     assert "```powershell" in core
     assert "function Find-GraphifyPython" in core
     assert "## Troubleshooting" in core
@@ -436,8 +440,8 @@ def test_compact_extraction_hosts_use_the_compact_spec():
         assert "(compact)" not in refs["extraction-spec.md"], f"[{key}] should be verbose"
 
 
-def test_every_split_host_renders_eight_references():
-    """All twelve split hosts render exactly the eight on-demand references."""
+def test_every_split_host_renders_nine_references():
+    """All twelve split hosts render exactly the nine on-demand references."""
     platforms = gen.load_platforms()
     expected = [
         "add-watch.md",
@@ -446,6 +450,7 @@ def test_every_split_host_renders_eight_references():
         "github-and-merge.md",
         "hooks.md",
         "query.md",
+        "sigma-viz.md",
         "transcribe.md",
         "update.md",
     ]
